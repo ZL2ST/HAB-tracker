@@ -34,22 +34,57 @@ You should see something like `Python 3.12.0` or higher. If the number is lower 
 
 ---
 
-## 2. Install the required dependencies
+## 2. Download the code
 
-These scripts rely on four free add-on packages, listed in the `requirements.txt` file.
-Install all of them in one command:
+Before anything else, you need a copy of these scripts on your own computer.
+
+- **Easiest way:** on the project's GitHub page, click the green **Code** button, choose
+  **Download ZIP**, then unzip it. This gives you a folder containing `track.py`, `point.py`,
+  and `requirements.txt`.
+- **If you use git:** `git clone <repository-url>`.
+
+Then open a terminal and **go into that folder** with the `cd` ("change directory") command,
+for example:
 
 ```bash
-pip install -r requirements.txt
+cd Downloads/HAB-tracker
 ```
 
-If `pip` is not found, try `pip3` instead:
+Everything in the rest of this guide must be run from **inside this folder** — that is where
+`requirements.txt` and the scripts live, and the commands below will not find them otherwise.
+To check you are in the right place, list the files and confirm you can see them:
+
+```bash
+ls          # macOS / Linux
+dir         # Windows
+```
+
+You should see `track.py`, `point.py`, and `requirements.txt` in the list.
+
+---
+
+## 3. Install the required dependencies
+
+These scripts rely on four free add-on packages, listed in the `requirements.txt` file.
+From inside the project folder (see section 2), install all of them in one command.
+
+**On macOS and Linux**, use `pip3`:
 
 ```bash
 pip3 install -r requirements.txt
 ```
 
-(This is the same as running `pip install pymap3d pygeomag pyserial requests` by hand.)
+**On Windows**, use `pip`:
+
+```bash
+pip install -r requirements.txt
+```
+
+> **Tip:** `pip` and `pip3` are the same tool, but on macOS the plain `pip` command is often
+> missing or points at the wrong Python — so if `pip` gives a "command not found" error, use
+> `pip3`.
+
+(This is the same as installing `pymap3d pygeomag pyserial requests` by hand.)
 
 What each package is for (you don't need to understand these, just install them):
 
@@ -60,14 +95,14 @@ What each package is for (you don't need to understand these, just install them)
 > **"Permission denied" or "externally-managed-environment" error?**
 > On macOS and Linux you may need to add `--user` to install just for your account:
 > ```bash
-> pip install --user pymap3d pygeomag pyserial requests
+> pip3 install --user -r requirements.txt
 > ```
 
 You only have to do this installation **once**.
 
 ---
 
-## 3. Editing settings (important background)
+## 4. Editing settings (important background)
 
 Both scripts have a block of settings near the top of the file that you must edit before
 running. To change them:
@@ -92,14 +127,14 @@ You can find your latitude and longitude by right-clicking your location in Goog
 
 ---
 
-## 4. `point.py` – the pointing calculator
+## 5. `point.py` – the pointing calculator
 
 Use this when you know roughly where the balloon is and just want to know which way to aim
 your antenna. It needs no radio and no internet.
 
 ### Settings to change
 
-In addition to the **station location** (see section 3), set the **balloon location**:
+In addition to the **station location** (see section 4), set the **balloon location**:
 
 ```python
 HAB_LAT = -41.180036     # Balloon Latitude
@@ -125,21 +160,21 @@ tilt) and the **Direct Distance** to the balloon.
 
 | Problem | Fix |
 | --- | --- |
-| `ModuleNotFoundError: No module named 'pymap3d'` (or similar) | The dependencies aren't installed. Go back to **section 2**. |
+| `ModuleNotFoundError: No module named 'pymap3d'` (or similar) | The dependencies aren't installed. Go back to **section 3**. |
 | `python3: command not found` | Try `python point.py` instead, or re-install Python with "Add to PATH" ticked. |
 | The numbers look wrong / point the wrong way | Double-check the sign of your latitude/longitude. South latitude and West longitude must be **negative**. |
 | `SyntaxError` mentioning f-strings | You're on an old Python. Install **3.12 or newer** (section 1). |
 
 ---
 
-## 5. `track.py` – the live tracker
+## 6. `track.py` – the live tracker
 
 This is the main program. It reads live telemetry from your **Lilygo T3S3 LoRa board**
 plugged in over USB, shows a live dashboard, and saves everything to a log file.
 
 ### Settings to change
 
-Set your **station location** (section 3), then review these:
+Set your **station location** (section 4), then review these:
 
 ```python
 STATION_CALLSIGN = "ZL2HV-S1"    # Your amateur radio callsign
@@ -188,4 +223,4 @@ are never overwritten.
 | Dashboard never appears, only `[Lilygo Message] ...` lines | The board is talking but not sending valid telemetry yet. Wait for the balloon to transmit, and confirm the board's firmware and `BAUD_RATE` (115200) match. |
 | Shows "No GPS Lock" | The balloon hasn't got a GPS fix yet – this is normal at startup. Pointing angles only appear once GPS is locked. |
 | SondeHub upload says "Error" or "Network Error" | Check your internet connection and that `STATION_CALLSIGN` is filled in correctly. Uploads are skipped until the balloon has a GPS lock. |
-| `ModuleNotFoundError` | Dependencies aren't installed – see **section 2**. |
+| `ModuleNotFoundError` | Dependencies aren't installed – see **section 3**. |
