@@ -1,0 +1,4 @@
+pymap3d
+pygeomag
+pyserial
+requests
